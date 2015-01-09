@@ -1,23 +1,18 @@
 #include "util.h"
 #include <QHash>
-
 void Util::get_metaData(QString path, QHash<QString, QString>& hash) {
     // get fileInfo first
     QFileInfo fileInfo(path);
     if (fileInfo.exists()) {
         hash["absFilePath"] = fileInfo.canonicalFilePath();
-        //QFileInfo::canonicalFilePath():canonical path including the file name.
         hash["fileName"] = fileInfo.fileName();
 
         QByteArray byteArray = path.toUtf8();
-        //QByteArray QString::toUtf8(): a unicode codec and can represent all characters in a unicode string.
         const char* cString = byteArray.constData();
-        //*QByteArray::constData(): a pointer to the data stored in the byte array. The pointer can be used to access the bytes that compose the array.
-
         TagLib::FileRef f(cString);
-        //provides a simple abstraction for creating and handling files.
         if (f.isNull()) {
             hash.clear();
+            return;
         }
         if (!f.isNull() && f.tag()) {
             TagLib::Tag *tag = f.tag();
@@ -46,6 +41,5 @@ QString Util::convert_length_format(int l) {
     int minutes = (l-seconds)/60;
     std::stringstream ss;
     ss << minutes << ":" << std::setfill('0') << std::setw(2) << seconds;
-    //if width is not 2, fill 0 at the beginning
     return QString::fromStdString(ss.str());
 }

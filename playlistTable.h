@@ -15,7 +15,7 @@ public:
 protected:
     virtual void mouseDoubleClickEvent(QMouseEvent* e);
     virtual void mouseReleaseEvent(QMouseEvent* e);
-#if DEBUG_PLAYLISTVIEW 
+#if DEBUG_PLAYLISTVIEW
     virtual void contextMenuEvent(QContextMenuEvent *e);
 #endif
     // for drag and drop

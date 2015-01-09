@@ -12,9 +12,12 @@ class PlaylistModel;
 PlaylistTable::PlaylistTable(QWidget* parent) : QTableView(parent) {
     // edit only when F2 is pressed
     setEditTriggers(QAbstractItemView::EditKeyPressed);
+    setAlternatingRowColors(true);
+
     // entire row is selected when any item is clicked
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ContiguousSelection);
+
     // enable drag and drop
     setDragEnabled(true);
     setAcceptDrops(true);
@@ -34,7 +37,7 @@ void PlaylistTable::mouseDoubleClickEvent(QMouseEvent* e) {
     qDebug()<< "Double click at (" << clickPos.x() << ", " << clickPos.y();
     qDebug()<< "ModelIndex: (" << clickIdx.row() << ", " << clickIdx.column();
 #endif
-    emit QTableView::activated(clickIdx);
+    emit(QTableView::activated(clickIdx));
 }
 
 void PlaylistTable::mouseReleaseEvent(QMouseEvent* e) {
@@ -94,7 +97,7 @@ void PlaylistTable::dragMoveEvent(QDragMoveEvent *event) {
         //qDebug() << "playlistTable::dragMoveEvent(myMediaItem)";
         event->setDropAction(Qt::MoveAction);
         event->accept();
-    }    
+    }
     else {
         event->ignore();
     }
@@ -112,7 +115,7 @@ void PlaylistTable::dropEvent(QDropEvent *event) {
         qDebug() << "Header is: " << header;
 
         if (header == "playlistItem") {
-        
+
             QPoint dropPos = event->pos();
             int dropRow = QTableView::indexAt(dropPos).row();
 

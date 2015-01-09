@@ -1,25 +1,52 @@
 #include "debug.h"
 #include "library.h"
 #include "libraryModel.h"
+#include "playlistLibraryModel.h"
+#include "playlistLibraryView.h"
 #include <QAbstractItemView>
 #include <QtWidgets>
 
 Library::Library(QWidget *parent) : QWidget(parent) {
+
+    libraryLabel = new QLabel(this);
+    libraryLabel->setText("Media Library");
+    playlistLabel = new QLabel(this);
+    playlistLabel->setText("Playlists");
+
+    // library model
     libraryModel = new LibraryModel(this);
 
-    // view
+    // library view
     libraryView = new LibraryView(this);
     libraryView->setModel(libraryModel);
-    //QTreeView setModel(QAbstractItemModel *model): set the model for the view to present
+
+    // playlist-library model
+    plModel = new PlaylistLibraryModel(this);
+
+    // playlist-library view
+    plView = new PlaylistLibraryView(this);
+    plView->setModel(plModel);
 
     // layout
     QBoxLayout *displayLayout = new QVBoxLayout;
+    displayLayout->setSpacing(5);
+
+    displayLayout->addWidget(libraryLabel);
+    displayLayout->setStretch(0, 1);
+
     displayLayout->addWidget(libraryView);
+    displayLayout->setStretch(1, 10);
+
+    displayLayout->addWidget(playlistLabel);
+    displayLayout->setStretch(2, 1);
+
+    displayLayout->addWidget(plView);
+    displayLayout->setStretch(3, 5);
     setLayout(displayLayout);
 
     // signal connections
     connect(libraryView, SIGNAL(activated(QModelIndex)), this, SLOT(addToPlaylist(QModelIndex)));
-    //activated(const QModelIndex &index): emitted when the item specified by index is activated by the user. activate items depends on the platform by single or double clicking the item
+
 }
 
 Library::~Library() {
@@ -35,10 +62,18 @@ LibraryView* Library::view() const {
     return libraryView;
 }
 
+PlaylistLibraryModel* Library::model_pl() const {
+    return plModel;
+}
+
+PlaylistLibraryView* Library::view_pl() const {
+    return plView;
+}
+
 // slot
 void Library::addToPlaylist(const QModelIndex idx) {
     TreeItem *item = libraryModel->getItem(idx);
-
+    ////qDebug() << "Clicked item has data: " << item->data();
     if (item->getItemType() == TreeItem::SONG) {
         emit(addSongToPlaylist(libraryModel->getSongInfo(idx)));
     }

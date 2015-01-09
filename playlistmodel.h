@@ -56,15 +56,21 @@ public:
     const QString getCurAlbumArtist(void) const;
     const QString getCurTitle(void) const;
 
-private slots:
+    // saving playlist
+    void savePlaylist(QString fileName);
 
+private slots:
     void beginRemoveItems(int start, int end);
     void endRemoveItems();
     void changeItems(int start, int end);
     void changeMetaData(QModelIndex index);
     void libraryMetaDataChanged(int dataType, QString arg1, QString arg2);
+    void loadPlaylistItem(QString absFilePath);
 
 signals:
+   void changePlaylistLabel(QString);
+   void playlistFileOpened(QFileInfo);
+   void newPlaylistCreated(QString, QString);
    void mediaAddedToPlaylist(QString);
    void mediaAvailable();
    void playlistMetaDataChange(QHash<QString, QString>);  // should be caught by library to update database.
@@ -88,4 +94,6 @@ private:
     int mode;
     int columns;
     bool finishedPlaylist;
+
+
 };

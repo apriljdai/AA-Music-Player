@@ -55,7 +55,10 @@ SOURCES       = main.cpp \
 		libraryModel.cpp \
 		library.cpp \
 		treeItem.cpp \
-		libraryView.cpp qrc_music_player2.cpp \
+		libraryView.cpp \
+		plsortfilterproxymodel.cpp \
+		playlistlibrarymodel.cpp \
+		playlistlibraryview.cpp qrc_music_player2.cpp \
 		moc_player.cpp \
 		moc_playercontrols.cpp \
 		moc_playlistmodel.cpp \
@@ -63,7 +66,10 @@ SOURCES       = main.cpp \
 		moc_mainWindow.cpp \
 		moc_libraryModel.cpp \
 		moc_library.cpp \
-		moc_libraryView.cpp
+		moc_libraryView.cpp \
+		moc_plsortfilterproxymodel.cpp \
+		moc_playlistlibrarymodel.cpp \
+		moc_playlistlibraryview.cpp
 OBJECTS       = main.o \
 		player.o \
 		playercontrols.o \
@@ -75,6 +81,9 @@ OBJECTS       = main.o \
 		library.o \
 		treeItem.o \
 		libraryView.o \
+		plsortfilterproxymodel.o \
+		playlistlibrarymodel.o \
+		playlistlibraryview.o \
 		qrc_music_player2.o \
 		moc_player.o \
 		moc_playercontrols.o \
@@ -83,7 +92,10 @@ OBJECTS       = main.o \
 		moc_mainWindow.o \
 		moc_libraryModel.o \
 		moc_library.o \
-		moc_libraryView.o
+		moc_libraryView.o \
+		moc_plsortfilterproxymodel.o \
+		moc_playlistlibrarymodel.o \
+		moc_playlistlibraryview.o
 DIST          = /usr/local/Cellar/qt5/5.3.2/mkspecs/features/spec_pre.prf \
 		/usr/local/Cellar/qt5/5.3.2/mkspecs/qdevice.pri \
 		/usr/local/Cellar/qt5/5.3.2/mkspecs/features/device_config.prf \
@@ -208,7 +220,10 @@ DIST          = /usr/local/Cellar/qt5/5.3.2/mkspecs/features/spec_pre.prf \
 		libraryModel.cpp \
 		library.cpp \
 		treeItem.cpp \
-		libraryView.cpp
+		libraryView.cpp \
+		plsortfilterproxymodel.cpp \
+		playlistlibrarymodel.cpp \
+		playlistlibraryview.cpp
 QMAKE_TARGET  = music_player2
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = music_player2.app/Contents/MacOS/music_player2
@@ -520,7 +535,7 @@ music_player2.app/Contents/Info.plist:
 	@sed -e "s,@SHORT_VERSION@,1.0,g" -e "s,@TYPEINFO@,????,g" -e "s,@ICON@,,g" -e "s,@BUNDLEIDENTIFIER@,DukeUniversity.music_player2,g" -e "s,@EXECUTABLE@,music_player2,g" -e "s,@TYPEINFO@,????,g" /usr/local/Cellar/qt5/5.3.2/mkspecs/macx-clang/Info.plist.app >music_player2.app/Contents/Info.plist
 dist: 
 	@test -d .tmp/music_player21.0.0 || mkdir -p .tmp/music_player21.0.0
-	$(COPY_FILE) --parents $(DIST) .tmp/music_player21.0.0/ && $(COPY_FILE) --parents music_player2.qrc .tmp/music_player21.0.0/ && $(COPY_FILE) --parents player.h playercontrols.h playlistmodel.h playlistTable.h mainWindow.h util.h debug.h libraryModel.h library.h treeItem.h libraryView.h .tmp/music_player21.0.0/ && $(COPY_FILE) --parents main.cpp player.cpp playercontrols.cpp playlistmodel.cpp playlistTable.cpp mainWindow.cpp util.cpp libraryModel.cpp library.cpp treeItem.cpp libraryView.cpp .tmp/music_player21.0.0/ && (cd `dirname .tmp/music_player21.0.0` && $(TAR) music_player21.0.0.tar music_player21.0.0 && $(COMPRESS) music_player21.0.0.tar) && $(MOVE) `dirname .tmp/music_player21.0.0`/music_player21.0.0.tar.gz . && $(DEL_FILE) -r .tmp/music_player21.0.0
+	$(COPY_FILE) --parents $(DIST) .tmp/music_player21.0.0/ && $(COPY_FILE) --parents music_player2.qrc .tmp/music_player21.0.0/ && $(COPY_FILE) --parents player.h playercontrols.h playlistmodel.h playlistTable.h mainWindow.h util.h debug.h libraryModel.h library.h treeItem.h libraryView.h plsortfilterproxymodel.h playlistlibrarymodel.h playlistlibraryview.h .tmp/music_player21.0.0/ && $(COPY_FILE) --parents main.cpp player.cpp playercontrols.cpp playlistmodel.cpp playlistTable.cpp mainWindow.cpp util.cpp libraryModel.cpp library.cpp treeItem.cpp libraryView.cpp plsortfilterproxymodel.cpp playlistlibrarymodel.cpp playlistlibraryview.cpp .tmp/music_player21.0.0/ && (cd `dirname .tmp/music_player21.0.0` && $(TAR) music_player21.0.0.tar music_player21.0.0 && $(COMPRESS) music_player21.0.0.tar) && $(MOVE) `dirname .tmp/music_player21.0.0`/music_player21.0.0.tar.gz . && $(DEL_FILE) -r .tmp/music_player21.0.0
 
 
 clean:compiler_clean 
@@ -554,9 +569,9 @@ qrc_music_player2.cpp: music_player2.qrc \
 		images/clearList_google_128px.png
 	/usr/local/Cellar/qt5/5.3.2/bin/rcc -name music_player2 music_player2.qrc -o qrc_music_player2.cpp
 
-compiler_moc_header_make_all: moc_player.cpp moc_playercontrols.cpp moc_playlistmodel.cpp moc_playlistTable.cpp moc_mainWindow.cpp moc_libraryModel.cpp moc_library.cpp moc_libraryView.cpp
+compiler_moc_header_make_all: moc_player.cpp moc_playercontrols.cpp moc_playlistmodel.cpp moc_playlistTable.cpp moc_mainWindow.cpp moc_libraryModel.cpp moc_library.cpp moc_libraryView.cpp moc_plsortfilterproxymodel.cpp moc_playlistlibrarymodel.cpp moc_playlistlibraryview.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_player.cpp moc_playercontrols.cpp moc_playlistmodel.cpp moc_playlistTable.cpp moc_mainWindow.cpp moc_libraryModel.cpp moc_library.cpp moc_libraryView.cpp
+	-$(DEL_FILE) moc_player.cpp moc_playercontrols.cpp moc_playlistmodel.cpp moc_playlistTable.cpp moc_mainWindow.cpp moc_libraryModel.cpp moc_library.cpp moc_libraryView.cpp moc_plsortfilterproxymodel.cpp moc_playlistlibrarymodel.cpp moc_playlistlibraryview.cpp
 moc_player.cpp: debug.h \
 		util.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QFileInfo \
@@ -581,10 +596,26 @@ moc_player.cpp: debug.h \
 		/usr/local/include/taglib/tpropertymap.h \
 		/usr/local/include/taglib/tmap.h \
 		/usr/local/include/taglib/tmap.tcc \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		playlistmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QDebug \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qdebug.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QAbstractTableModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaContent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediacontent.h \
+		playercontrols.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlayer \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplayer.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		playlistTable.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QTimer \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qtimer.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlaylist \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplaylist.h \
 		player.h
@@ -689,10 +720,26 @@ moc_mainWindow.cpp: debug.h \
 		/usr/local/include/taglib/tmap.h \
 		/usr/local/include/taglib/tmap.tcc \
 		player.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		playlistmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QDebug \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qdebug.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QAbstractTableModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaContent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediacontent.h \
+		playercontrols.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlayer \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplayer.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		playlistTable.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QTimer \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qtimer.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlaylist \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplaylist.h \
 		library.h \
@@ -705,13 +752,16 @@ moc_mainWindow.cpp: debug.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QHash \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qhash.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QAbstractItemModel \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
 		libraryView.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTreeView \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreeview.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		playlistlibraryview.h \
+		plsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QLabel \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlabel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QMainWindow \
@@ -756,7 +806,6 @@ moc_mainWindow.cpp: debug.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistwidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstyleditemdelegate.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtablewidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidgetitemiterator.h \
@@ -920,6 +969,15 @@ moc_library.cpp: libraryModel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreeview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		playlistlibraryview.h \
+		plsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QLabel \
@@ -933,6 +991,33 @@ moc_libraryView.cpp: /usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Version
 		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
 		libraryView.h
 	/usr/local/Cellar/qt5/5.3.2/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -I/usr/local/Cellar/qt5/5.3.2/mkspecs/macx-clang -I/Users/jieqingdai/Applications/Qt/musicplayer2 -I/usr/local/include -I/usr/local/Cellar/qt5/5.3.2/lib/QtMultimediaWidgets.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtSql.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtNetwork.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtXml.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/c++/4.2.1 -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/c++/4.2.1/backward -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/6.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include -F/usr/local/Cellar/qt5/5.3.2/lib libraryView.h -o moc_libraryView.cpp
+
+moc_plsortfilterproxymodel.cpp: /usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
+		plsortfilterproxymodel.h
+	/usr/local/Cellar/qt5/5.3.2/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -I/usr/local/Cellar/qt5/5.3.2/mkspecs/macx-clang -I/Users/jieqingdai/Applications/Qt/musicplayer2 -I/usr/local/include -I/usr/local/Cellar/qt5/5.3.2/lib/QtMultimediaWidgets.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtSql.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtNetwork.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtXml.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/c++/4.2.1 -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/c++/4.2.1/backward -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/6.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include -F/usr/local/Cellar/qt5/5.3.2/lib plsortfilterproxymodel.h -o moc_plsortfilterproxymodel.cpp
+
+moc_playlistlibrarymodel.cpp: /usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		playlistlibrarymodel.h
+	/usr/local/Cellar/qt5/5.3.2/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -I/usr/local/Cellar/qt5/5.3.2/mkspecs/macx-clang -I/Users/jieqingdai/Applications/Qt/musicplayer2 -I/usr/local/include -I/usr/local/Cellar/qt5/5.3.2/lib/QtMultimediaWidgets.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtSql.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtNetwork.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtXml.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/c++/4.2.1 -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/c++/4.2.1/backward -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/6.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include -F/usr/local/Cellar/qt5/5.3.2/lib playlistlibrarymodel.h -o moc_playlistlibrarymodel.cpp
+
+moc_playlistlibraryview.cpp: plsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
+		playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		playlistlibraryview.h
+	/usr/local/Cellar/qt5/5.3.2/bin/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -I/usr/local/Cellar/qt5/5.3.2/mkspecs/macx-clang -I/Users/jieqingdai/Applications/Qt/musicplayer2 -I/usr/local/include -I/usr/local/Cellar/qt5/5.3.2/lib/QtMultimediaWidgets.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtSql.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtNetwork.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtXml.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Headers -I/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Headers -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/c++/4.2.1 -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/c++/4.2.1/backward -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/6.0/include -I/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include -I/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include -F/usr/local/Cellar/qt5/5.3.2/lib playlistlibraryview.h -o moc_playlistlibraryview.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -976,10 +1061,26 @@ main.o: main.cpp debug.h \
 		/usr/local/include/taglib/tmap.tcc \
 		mainWindow.h \
 		player.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		playlistmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QDebug \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qdebug.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QAbstractTableModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaContent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediacontent.h \
+		playercontrols.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlayer \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplayer.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		playlistTable.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QTimer \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qtimer.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlaylist \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplaylist.h \
 		library.h \
@@ -992,13 +1093,16 @@ main.o: main.cpp debug.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QHash \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qhash.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QAbstractItemModel \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
 		libraryView.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTreeView \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreeview.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		playlistlibraryview.h \
+		plsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QLabel \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlabel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QMainWindow \
@@ -1043,7 +1147,6 @@ main.o: main.cpp debug.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistwidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstyleditemdelegate.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtablewidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidgetitemiterator.h \
@@ -1159,12 +1262,6 @@ player.o: player.cpp player.h \
 		/usr/local/include/taglib/tpropertymap.h \
 		/usr/local/include/taglib/tmap.h \
 		/usr/local/include/taglib/tmap.tcc \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlayer \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplayer.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlaylist \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplaylist.h \
 		playlistmodel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QDebug \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qdebug.h \
@@ -1174,6 +1271,10 @@ player.o: player.cpp player.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaContent \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediacontent.h \
 		playercontrols.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlayer \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplayer.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
 		playlistTable.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
@@ -1181,6 +1282,8 @@ player.o: player.cpp player.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QTimer \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qtimer.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlaylist \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplaylist.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaService \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaservice.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QAudioProbe \
@@ -1369,7 +1472,13 @@ playlistmodel.o: playlistmodel.cpp playlistmodel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QBrush \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qbrush.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QMimeData \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qmimedata.h
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qmimedata.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QApplication \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qapplication.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QMessageBox \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qmessagebox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o playlistmodel.o playlistmodel.cpp
 
 playlistTable.o: playlistTable.cpp playlistTable.h \
@@ -1445,10 +1554,26 @@ mainWindow.o: mainWindow.cpp mainWindow.h \
 		/usr/local/include/taglib/tmap.h \
 		/usr/local/include/taglib/tmap.tcc \
 		player.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		playlistmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QDebug \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qdebug.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QAbstractTableModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaContent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediacontent.h \
+		playercontrols.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlayer \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplayer.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		playlistTable.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QTimer \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qtimer.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaPlaylist \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediaplaylist.h \
 		library.h \
@@ -1461,13 +1586,16 @@ mainWindow.o: mainWindow.cpp mainWindow.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QHash \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qhash.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QAbstractItemModel \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
 		libraryView.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTreeView \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreeview.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		playlistlibraryview.h \
+		plsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QLabel \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlabel.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QMainWindow \
@@ -1512,7 +1640,6 @@ mainWindow.o: mainWindow.cpp mainWindow.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistwidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstyleditemdelegate.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtablewidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidgetitemiterator.h \
@@ -1596,18 +1723,13 @@ mainWindow.o: mainWindow.cpp mainWindow.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtoolbox.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtoolbutton.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtwidgetsversion.h \
-		playlistmodel.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QDebug \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qdebug.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QAbstractTableModel \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/QMediaContent \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtMultimedia.framework/Versions/5/Headers/qmediacontent.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QMenu \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QMenuBar \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QApplication \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QString \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qstring.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QFileDialog
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QFileDialog \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QDesktopWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainWindow.o mainWindow.cpp
 
 util.o: util.cpp util.h \
@@ -1846,6 +1968,15 @@ library.o: library.cpp debug.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreeview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		playlistlibraryview.h \
+		plsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QWidget \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QLabel \
@@ -1889,7 +2020,6 @@ library.o: library.cpp debug.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistwidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstyleditemdelegate.h \
-		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtablewidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidget.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidgetitemiterator.h \
@@ -2034,6 +2164,178 @@ libraryView.o: libraryView.cpp libraryView.h \
 		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qabstractitemview.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o libraryView.o libraryView.cpp
 
+plsortfilterproxymodel.o: plsortfilterproxymodel.cpp plsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
+		playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QDebug \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qdebug.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o plsortfilterproxymodel.o plsortfilterproxymodel.cpp
+
+playlistlibrarymodel.o: playlistlibrarymodel.cpp playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QtWidgets \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qaccessiblewidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcolordialog.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdialog.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qerrormessage.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qfiledialog.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qfilesystemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qfontdialog.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qinputdialog.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qmessagebox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qprogressdialog.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwizard.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicseffect.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicsanchorlayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicsgridlayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicsitem.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicsitemanimation.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicslayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicslayoutitem.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicslinearlayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicsproxywidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicsscene.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicssceneevent.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicstransform.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicsview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgraphicswidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qabstractitemdelegate.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qabstractitemview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcolumnview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdatawidgetmapper.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdirmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qfileiconprovider.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qheaderview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qitemdelegate.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qitemeditorfactory.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlistwidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstyleditemdelegate.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtablewidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreeview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtreewidgetitemiterator.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qaction.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qactiongroup.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qapplication.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qboxlayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdesktopwidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qformlayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgesture.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgesturerecognizer.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgridlayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlayoutitem.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qshortcut.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qsizepolicy.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstackedlayout.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtooltip.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwhatsthis.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qwidgetaction.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qkeyeventtransition.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qmouseeventtransition.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcommonstyle.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdrawutil.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qproxystyle.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstyle.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstylefactory.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstyleoption.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstylepainter.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstyleplugin.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcolormap.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcompleter.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qscroller.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qscrollerproperties.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qsystemtrayicon.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qundogroup.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qundostack.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qundoview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qabstractbutton.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qabstractscrollarea.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qabstractslider.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qabstractspinbox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qbuttongroup.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcalendarwidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcheckbox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcombobox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qcommandlinkbutton.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdatetimeedit.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdial.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdialogbuttonbox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qdockwidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qfocusframe.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qfontcombobox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qframe.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qgroupbox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qkeysequenceedit.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlabel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlcdnumber.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qlineedit.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qmainwindow.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qmdiarea.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qmdisubwindow.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qmenu.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qmenubar.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qplaintextedit.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qprogressbar.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qpushbutton.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qradiobutton.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qrubberband.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qscrollarea.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qscrollbar.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qsizegrip.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qslider.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qspinbox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qsplashscreen.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qsplitter.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstackedwidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qstatusbar.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtabbar.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtabwidget.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtextbrowser.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtextedit.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtoolbar.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtoolbox.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtoolbutton.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtwidgetsversion.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtSql.framework/Versions/5/Headers/QSqlQuery \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtSql.framework/Versions/5/Headers/qsqlquery.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QFileInfo \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qfileinfo.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QMessageBox
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o playlistlibrarymodel.o playlistlibrarymodel.cpp
+
+playlistlibraryview.o: playlistlibraryview.cpp playlistlibraryview.h \
+		plsortfilterproxymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QSortFilterProxyModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qsortfilterproxymodel.h \
+		playlistlibrarymodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QStandardItemModel \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qstandarditemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QModelIndex \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qabstractitemmodel.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QTableView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qtableview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/QMouseEvent \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtGui.framework/Versions/5/Headers/qevent.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/QHeaderView \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtWidgets.framework/Versions/5/Headers/qheaderview.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QMimeData \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qmimedata.h \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/QDebug \
+		/usr/local/Cellar/qt5/5.3.2/lib/QtCore.framework/Versions/5/Headers/qdebug.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o playlistlibraryview.o playlistlibraryview.cpp
+
 qrc_music_player2.o: qrc_music_player2.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_music_player2.o qrc_music_player2.cpp
 
@@ -2060,6 +2362,15 @@ moc_library.o: moc_library.cpp
 
 moc_libraryView.o: moc_libraryView.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_libraryView.o moc_libraryView.cpp
+
+moc_plsortfilterproxymodel.o: moc_plsortfilterproxymodel.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_plsortfilterproxymodel.o moc_plsortfilterproxymodel.cpp
+
+moc_playlistlibrarymodel.o: moc_playlistlibrarymodel.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_playlistlibrarymodel.o moc_playlistlibrarymodel.cpp
+
+moc_playlistlibraryview.o: moc_playlistlibraryview.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_playlistlibraryview.o moc_playlistlibraryview.cpp
 
 ####### Install
 

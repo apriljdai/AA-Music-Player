@@ -1,7 +1,4 @@
 #include "player.h"
-#include "playlistmodel.h"
-#include "playercontrols.h"
-#include "playlistTable.h"
 
 #include <QMediaService>
 #include <QMediaPlaylist>
@@ -12,15 +9,12 @@
 
 Player::Player(QWidget *parent) :QWidget(parent), coverLabel(0), slider(0) {
     player = new QMediaPlayer(this);
+    duration = 0;
 
     //-----------playlist model-view setup------------
-    //playlist = new QMediaPlaylist();
-    //player->setPlaylist(playlist);
-
     playlistModel = new PlaylistModel(this);
-    //playlistModel->setPlaylist(playlist);
 
-    // need to figure the correct column playlist view
+    // need to configure the correct column playlist view
     playlistView = new PlaylistTable(this);
     playlistView->setModel(playlistModel);
     playlistView->setCurrentIndex(playlistModel->index(playlistModel->getCurMediaIdx(),0));
@@ -34,6 +28,7 @@ Player::Player(QWidget *parent) :QWidget(parent), coverLabel(0), slider(0) {
     connect(playlistModel, SIGNAL(currentIndexChanged(int)), SLOT(playlistPositionChanged(int)));
     connect(playlistModel, SIGNAL(curMediaRemoved(int)), SLOT(curMediaRemoved(int)));
     connect(playlistModel, SIGNAL(mediaAvailable()), SLOT(mediaAvailable()));
+    connect(playlistModel, SIGNAL(changePlaylistLabel(QString)), this, SLOT(changePlaylistLabel(QString)));
 
     // buttons for playback mode, and playlist actions
     curPlaylistLabel = new QLabel(this);
@@ -53,7 +48,7 @@ Player::Player(QWidget *parent) :QWidget(parent), coverLabel(0), slider(0) {
     repeatAllButton->setToolTip("Repeat all");
     repeatAllButton->setCheckable(true);
     connect(repeatAllButton, SIGNAL(toggled(bool)), this, SLOT(setRepeatAll(bool)));
-    
+
     QToolButton *shuffleButton = new QToolButton(this);
     shuffleButton->setIcon(QIcon(":/images/shuffle_google_128px.png"));
     shuffleButton->setFixedSize(shuffleButton->sizeHint());
@@ -65,6 +60,7 @@ Player::Player(QWidget *parent) :QWidget(parent), coverLabel(0), slider(0) {
     saveListButton->setIcon(QIcon(":/images/saveList_google_128px.png"));
     saveListButton->setFixedSize(saveListButton->sizeHint());
     saveListButton->setToolTip("Save queue as playlist");
+    connect(saveListButton, SIGNAL(clicked()), this, SLOT(savePlaylist()));
 
     QToolButton *clearListButton = new QToolButton(this);
     clearListButton->setIcon(QIcon(":/images/clearList_google_128px.png"));
@@ -87,7 +83,7 @@ Player::Player(QWidget *parent) :QWidget(parent), coverLabel(0), slider(0) {
     controls->setVolume(player->volume());
     controls->setMuted(controls->isMuted());
 
-    connect(controls, SIGNAL(play()), player, SLOT(play()));
+    connect(controls, SIGNAL(play()), this, SLOT(play()));
     connect(controls, SIGNAL(pause()), player, SLOT(pause()));
     connect(controls, SIGNAL(stop()), this, SLOT(stop()));
     connect(controls, SIGNAL(next()), this, SLOT(next()));
@@ -115,17 +111,17 @@ Player::Player(QWidget *parent) :QWidget(parent), coverLabel(0), slider(0) {
     playlistControlLayout->setMargin(0);
     playlistControlLayout->addWidget(curPlaylistLabel);
     playlistControlLayout->addStretch();
-    
+
     QBoxLayout *playlistButtonLayout = new QHBoxLayout;
     playlistButtonLayout->setDirection(QBoxLayout::RightToLeft);
     playlistButtonLayout->addWidget(clearListButton);
     playlistButtonLayout->addWidget(saveListButton);
-    playlistButtonLayout->addWidget(shuffleButton); 
+    playlistButtonLayout->addWidget(shuffleButton);
     playlistButtonLayout->addWidget(repeatAllButton);
     playlistButtonLayout->addWidget(repeatOneButton);
-    
+
     playlistControlLayout->addLayout(playlistButtonLayout);
-    
+
     QBoxLayout *displayLayout = new QHBoxLayout;
     displayLayout->addWidget(playlistView);
 
@@ -204,7 +200,7 @@ void Player::positionChanged(qint64 progress) {
 void Player::previousClicked() {
     // Go to previous track if we are within the first 5 seconds of playback
     // otherwise, seek to the beginning
-            
+
     if (player->position() <= 5000) {
         player->setMedia(playlistModel->previousMedia());
         player->play();
@@ -231,39 +227,49 @@ void Player::playlistPositionChanged(int currentItem) {
 }
 
 void Player::curMediaRemoved(int newCurMediaIdx) {
-    qDebug() << "Player: curMediaRemoved";
+    ////qDebug() << "Player: curMediaRemoved";
     stop();
     if (newCurMediaIdx >= 0) {
         playlistView->setCurrentIndex(playlistModel->index(newCurMediaIdx,0));
         player->setMedia(playlistModel->currentMedia());
     }
     else {
-        qDebug() << "Player: curMediaRemoved, set media to none!";
+        //qDebug() << "Player: curMediaRemoved, set media to none!";
         playlistView->setCurrentIndex(QModelIndex());
         player->setMedia(QMediaContent());
-	emit(changeTitle("AAMusicPlayer"));
+        emit(changeTitle("AAMusicPlayer"));
     }
 }
 
 void Player::mediaAvailable() {
-    qDebug() << "Player: mediaAvailable";
+    //qDebug() << "Player: mediaAvailable";
     player->setMedia(playlistModel->currentMedia());
 }
 
 void Player::clearPlaylist() {
-    qDebug() << "Player: clearPlaylist";
+    //qDebug() << "Player: clearPlaylist";
     stop();
     playlistView->setCurrentIndex(QModelIndex());
     player->setMedia(QMediaContent());
     playlistModel->clear();
+    changePlaylistLabel(QString());
+    setTrackInfo(QString());
 }
 
 void Player::stop() {
     player->stop();
     slider->setValue(0);
-    qDebug() << "Clearing labelDuration in stop()";
+    //qDebug() << "Clearing labelDuration in stop()";
     labelDuration->clear();
     player->setPosition(0);
+}
+
+void Player::play() {
+    // highlight the correct media, then play
+    if (player->isAudioAvailable()) {
+        playlistView->setCurrentIndex(playlistModel->getCurMediaModelIndex());
+        player->play();
+    }
 }
 
 void Player::seek(int seconds) {
@@ -297,7 +303,7 @@ void Player::statusChanged(QMediaPlayer::MediaStatus status) {
             setStatusInfo(tr("Loading..."));
             break;
         case QMediaPlayer::StalledMedia:
-            qDebug() << "Media stalled";
+            //qDebug() << "Media stalled";
             setStatusInfo(tr("Media Stalled"));
             break;
         case QMediaPlayer::EndOfMedia:
@@ -338,11 +344,10 @@ void Player::audioAvailableChanged(bool available)
 }
 
 void Player::metaDataChanged() {
-  //qDebug() << "metaDataChanged()";
     if (player->isMetaDataAvailable()) {
         QString title = playlistModel->getCurTitle();
         QString albumArtist = playlistModel->getCurAlbumArtist();
-	qDebug() << "metaDataChanged loop: tite=" << title << ", albumArtist=" << albumArtist;
+        //qDebug() << "metaDataChanged loop: title=" << title << ", albumArtist=" << albumArtist;
         if (!title.isNull() && !albumArtist.isNull()) {
             setTrackInfo(QString("%1 - %2").arg(title).arg(albumArtist));
         }
@@ -359,7 +364,7 @@ void Player::setTrackInfo(const QString &info) {
     }
     else {
         if (!statusInfo.isEmpty()) {
-	  emit(changeTitle(QString("%1 | %2").arg(trackInfo).arg(statusInfo)));
+            emit(changeTitle(QString("%1 | %2").arg(trackInfo).arg(statusInfo)));
         }
     }
 }
@@ -376,6 +381,31 @@ void Player::setStatusInfo(const QString &info)
 void Player::displayErrorMessage()
 {
     setStatusInfo(player->errorString());
+}
+
+void Player::savePlaylist() {
+    if (playlistModel->rowCount(QModelIndex()) == 0) {
+       // nothing to save
+       //qDebug() << "Nothing to save!";
+       return;
+    } else {
+       QString fileName = QFileDialog::getSaveFileName(this);
+       if (fileName.isEmpty()) {
+           //qDebug() << "File name empty!";
+           return;
+       }
+       playlistModel->savePlaylist(fileName);
+    }
+}
+
+void Player::changePlaylistLabel(QString absFilePath) {
+    if (absFilePath.isEmpty()) {
+        curPlaylistLabel->setText("Queue");
+        return;
+    }
+    QFileInfo f(absFilePath);
+    curPlaylistLabel->setText(QString("Playlist: %1").arg(f.baseName()));
+    stop();
 }
 
 void Player::updateDurationInfo(qint64 currentInfo)

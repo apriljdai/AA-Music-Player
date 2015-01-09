@@ -1,6 +1,10 @@
 #pragma once
 #include "debug.h"
 #include "util.h"
+#include "playlistmodel.h"
+#include "playercontrols.h"
+#include "playlistTable.h"
+
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
@@ -15,6 +19,7 @@ class QAudioProbe;
 
 class PlaylistModel;
 class PlaylistTable;
+class PlaylistProxyModel;
 
 class Player : public QWidget {
     Q_OBJECT
@@ -31,7 +36,7 @@ signals:
     void changeTitle(QString);
 
 private slots:
-    void open(); 
+    void open();
     void addSongFromLibrary(const QHash<QString, QString> hash);
     void addArtistFromLibrary(const QList<QHash<QString, QString> > hashList);
 
@@ -43,11 +48,12 @@ private slots:
     void durationChanged(qint64 duration);
     void positionChanged(qint64 progress);
     void metaDataChanged();
-    
+
     // Player control needing extra handling
     void previousClicked();
 
     // Player control for playlists
+    void play();
     void seek(int seconds);
     void jump(const QModelIndex &index);
     void playlistPositionChanged(int currentItem);
@@ -67,6 +73,10 @@ private slots:
 
     void displayErrorMessage();
 
+    // playlist management
+    void savePlaylist();
+    void changePlaylistLabel(QString absFilePath);
+
 private:
     void setTrackInfo(const QString &info);
     void setStatusInfo(const QString &info);
@@ -84,4 +94,3 @@ private:
     QString statusInfo;
     qint64 duration;
 };
-    

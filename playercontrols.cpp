@@ -44,6 +44,7 @@ PlayerControls::PlayerControls(QWidget *parent) :
     volumeSlider->setRange(0, 100);
     volumeSlider->setFixedSize(volumeSlider->sizeHint());
     connect(volumeSlider, SIGNAL(sliderMoved(int)), this, SIGNAL(changeVolume(int)));
+    connect(volumeSlider, SIGNAL(valueChanged(int)), this, SIGNAL(changeVolume(int)));
 
     // playback rate box chooser
     /* Works like the following:
@@ -124,7 +125,7 @@ int PlayerControls::volume() const {
 }
 
 void PlayerControls::setVolume(int volume) {
-    if (volumeSlider) 
+    if (volumeSlider)
         volumeSlider->setValue(volume);
 }
 
@@ -136,7 +137,7 @@ void PlayerControls::setMuted(bool muted) {
     if (muted != playerMuted) {
         playerMuted = muted;
 
-        muteButton->setIcon(style()->standardIcon(muted ? 
+        muteButton->setIcon(style()->standardIcon(muted ?
                     QStyle::SP_MediaVolumeMuted : QStyle::SP_MediaVolume));
     }
 }

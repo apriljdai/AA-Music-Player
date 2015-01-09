@@ -6,33 +6,38 @@
 #include <QApplication>
 #include <QString>
 #include <QFileDialog>
+#include <QDesktopWidget>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setWindowTitle(tr("AAMusicPlayer"));
 
     // set up player/playlist area
-    player = new Player();
+    player = new Player(this);
 
     // set up library
-    library = new Library();
+    library = new Library(this);
 
     // central Widget
-    centralWidget = new QWidget();
+    centralWidget = new QWidget(this);
 
     setupWidgets();
+    menubar = new QMenuBar(this);
     setupMenus();
 }
 
 MainWindow::~MainWindow() {
+    /*
     delete player;
     delete library;
     delete centralWidget;
     delete fileMenu;
-    delete menubar;
     delete exitAction;
     delete importFromFolderAction;
     delete refreshLibraryAction;
-    //delete importFileAction;
+    delete aboutMenu;
+    delete aboutAction;
+    */
+    delete menubar;
 }
 
 void MainWindow::setupWidgets() {
@@ -40,9 +45,6 @@ void MainWindow::setupWidgets() {
     QHBoxLayout *hboxLayout = new QHBoxLayout(centralWidget);
 
     QSizePolicy spLibrary(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
-    //QSizePolicy::MinimumExpanding: the SizeHint() is minimal, and sufficient. The widget can make use of extra space, so it should get as much space as possible
-    //QSizePolicy::Preferred: the sizeHint() is best, but the widget can be shrunk and still be useful. The widget can be expanded, but there is no advantage to it being larger than sizeHint()
-    //sizeHint(): holds the recommended size for the widget
     spLibrary.setHorizontalStretch(1);
     library->setSizePolicy(spLibrary);
     hboxLayout->addWidget(library);
@@ -60,10 +62,13 @@ void MainWindow::setupWidgets() {
     connect(player->model(), SIGNAL(mediaAddedToPlaylist(QString)), library->model(), SLOT(addMusicFromPlaylist(QString)));
     connect(player->model(), SIGNAL(playlistMetaDataChange(QHash<QString, QString>)), library->model(), SLOT(playlistMetaDataChange(QHash<QString,QString>)));
     connect(library->model(), SIGNAL(libraryMetaDataChanged(int, QString, QString)), player->model(), SLOT(libraryMetaDataChanged(int, QString, QString)));
+    connect(player->model(), SIGNAL(playlistFileOpened(QFileInfo)), library->model_pl(), SLOT(addToModelAndDB(QFileInfo)));
+
+    connect(library->model_pl(), SIGNAL(loadPlaylist(QString)), player->model(), SLOT(loadPlaylistItem(QString)));
+    connect(player->model(), SIGNAL(newPlaylistCreated(QString, QString)), library->model_pl(), SLOT(addNewlyCreatedPlaylist(QString, QString)));
 }
 
 void MainWindow::setupMenus() {
-    menubar = new QMenuBar(this);
 
     fileMenu = menubar->addMenu(tr("&File"));
     // actions associated with fileMenu:
@@ -72,25 +77,33 @@ void MainWindow::setupMenus() {
     importFromFolderAction = new QAction(tr("Import from folder"), this);
     fileMenu->addAction(importFromFolderAction);
     connect(importFromFolderAction, SIGNAL(triggered()), this, SLOT(importFromFolder()));
-    //triggered(): emitted when the action is activated by the user.
 
     // refreshLibraryAction
     refreshLibraryAction = new QAction(tr("Refresh Library"), this);
     fileMenu->addAction(refreshLibraryAction);
     connect(refreshLibraryAction, SIGNAL(triggered()), library->model(), SLOT(refreshLibrary()));
+    connect(refreshLibraryAction, SIGNAL(triggered()), library->model_pl(), SLOT(refresh()));
 
     // exitAction
     exitAction = new QAction(tr("&Exit"), this);
     fileMenu->addAction(exitAction);
     connect(exitAction, SIGNAL(triggered()), this, SLOT(close()));
+
+    aboutMenu = menubar->addMenu(tr("&About"));
+
+    // aboutAction
+    aboutAction = new QAction(tr("About"), this);
+    aboutMenu->addAction(aboutAction);
+    connect(aboutAction, SIGNAL(triggered()), SLOT(about()));
 }
 
 void MainWindow::importFromFolder() {
     QString dir = QFileDialog::getExistingDirectory(this, tr("Import from folder"),
                           QString(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-    //QFileDialog::getExistingDirectory(QWidget *parent = 0, QString(), const QString & dir, Options options = ShowDirsOnly)
-    //QFileDialog::ShowDirsOnly: Only show directories in the file dialog.
-    //QFileDialog::DontResolveSymlinks: Don't resolve symlinks in the file dialog.
     library->model()->addFromDir(dir);
 }
 
+void MainWindow::about() {
+    QString msg = "AAMusicPlayer\nThe MIT License (MIT)\nCopyright (c) 2014 Allen Yin, April Dai";
+    QMessageBox::about(0, "Title", msg);
+}

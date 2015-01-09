@@ -5,6 +5,7 @@
 class LibraryModel;
 
 LibraryView::LibraryView(QWidget *parent) : QTreeView(parent) {
+    setEditTriggers(QAbstractItemView::EditKeyPressed);
     setSelectionBehavior(QAbstractItemView::SelectItems);
     setAnimated(false);
     resizeColumnToContents(0);
@@ -14,18 +15,26 @@ LibraryView::LibraryView(QWidget *parent) : QTreeView(parent) {
     // enable drag and drop
     setDragEnabled(true);
     setAcceptDrops(false);
+
+    // cosmetics
+    setAlternatingRowColors(true);
+    setWordWrap(true);
 }
 
 LibraryView::~LibraryView() {
     // nothing to destroy specifically yet
 }
 
+void LibraryView::keyPressEvent(QKeyEvent *event) {
+    QTreeView::keyPressEvent(event);
+}
+
 void LibraryView::mouseDoubleClickEvent(QMouseEvent* event) {
     QPoint clickPos = event->pos();
     const QModelIndex clickIdx = QTreeView::indexAt(clickPos);
-    qDebug()<< "Double click at (" << clickPos.x() << ", " << clickPos.y() << ")";
-    qDebug()<< "ModelIndex: (" << clickIdx.row() << ", " << clickIdx.column() << ")";
-    emit (QTreeView::activated(clickIdx));
+    //qDebug()<< "Double click at (" << clickPos.x() << ", " << clickPos.y() << ")";
+    //qDebug()<< "ModelIndex: (" << clickIdx.row() << ", " << clickIdx.column() << ")";
+    emit(QTreeView::activated(clickIdx));
 }
 
 void LibraryView::dragEnterEvent(QDragEnterEvent *event) {
@@ -47,13 +56,3 @@ void LibraryView::dragMoveEvent(QDragMoveEvent *event) {
         event->ignore();
     }
 }
-
-void LibraryView::contextMenuEvent(QContextMenuEvent *event){
-}
-
-
-
-
-
-
-

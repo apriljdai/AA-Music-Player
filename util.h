@@ -1,6 +1,6 @@
 #pragma once
 #include <sstream>
-#include <iomanip>      //std::setfill, std::setw
+#include <iomanip>
 #include <QFileInfo>
 #include <QUrl>
 #include <taglib/fileref.h>
